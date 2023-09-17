@@ -23,9 +23,6 @@ def get_tweet(tweet_id):
     except Exception as e:
         print(f"Failed to extract tweet text: {str(e)}")
 
-    # Close the WebDriver
-    driver.quit()
-
 
 def get_reply(tweet_id):
     tweet_url = 'https://twitter.com/anyuser/status/' + tweet_id
@@ -86,19 +83,68 @@ def parse_tweet(tweet_string):
     return tweet_data
 
 
-with open('/Users/andrew/Desktop/community_notes_2/dataset/community_notes_trim.csv', mode='r') as input_file:
-    csv_reader = csv.DictReader(input_file)
-    fieldnames = csv_reader.fieldnames
+# Function to simulate get_tweet() (replace this with your actual implementation)
 
-    # Create a temporary list to store rows with updated data
-    updated_rows = []
+def get_tweet(tweet_id):
+    return f"Tweet text for ID {tweet_id}"
 
-    # Open the output CSV file for writing
-    for row in csv_reader:
-        # Fetch the tweet text using Selenium
-        tweet_id = row['tweetId']
-        tweet_text = get_tweet(tweet_id)
-        print(tweet_text)
-        print("worked on tweetID: " + tweet_id)
 
-    print("CSV file updated successfully.")
+# Define input and output file paths
+input_file_path = '/Users/andrew/Desktop/community_notes_2/dataset/community_notes_trim.csv'
+output_file_path = '/Users/andrew/Desktop/community_notes_2/dataset/community_notes_trim_updated.csv'
+
+
+# Assumed you have get_tweet and parse_tweet methods already defined
+
+
+def main(input_file_path, output_file_path):
+    with open(input_file_path, 'r') as infile, open(output_file_path, 'w', newline='') as outfile:
+        # Create a CSV reader and writer object
+        csv_reader = csv.reader(infile)
+        csv_writer = csv.writer(outfile)
+
+        # Write the header to the output CSV file
+        csv_writer.writerow(['text', 'username', 'date', 'timestamp',
+                            'views', 'reposts', 'quotes', 'likes', 'bookmarks'])
+
+        # Skip the header in the input CSV if it exists
+        next(csv_reader, None)
+
+        # Counter for the number of processed tweets
+        tweet_count = 0
+
+        for row in csv_reader:
+            if tweet_count >= 100:  # Stop after processing 100 tweets
+                break
+
+            # Assuming tweet_id is the first column in your input CSV
+            tweet_id = row[0]
+            tweet_string = get_tweet(tweet_id)
+            tweet_data = parse_tweet(tweet_string)
+
+            # Ensure that all the keys exist in tweet_data dictionary
+            for key in ['text', 'username', 'date', 'timestamp', 'views', 'reposts', 'quotes', 'likes', 'bookmarks']:
+                tweet_data.setdefault(key, 'N/A')
+
+            # Write the row to the CSV
+            csv_writer.writerow([tweet_data['text'], tweet_data['username'], tweet_data['date'], tweet_data['timestamp'],
+                                 tweet_data['views'], tweet_data['reposts'], tweet_data['quotes'], tweet_data['likes'],
+                                 tweet_data['bookmarks']])
+
+            # Increment the counter
+            tweet_count += 1
+
+
+if __name__ == "__main__":
+    # Define the input and output file paths
+    input_file_path = '/Users/andrew/Desktop/community_notes_2/dataset/community_notes_trim.csv'
+    output_file_path = '/Users/andrew/Desktop/community_notes_2/dataset/community_notes_trim_updated.csv'
+
+    # Initialize the WebDriver outside the main function so it won't be created and destroyed in each iteration
+    driver = webdriver.Chrome(
+        executable_path='/Users/andrew/Desktop/community_notes_2/chromed/chromedriver')
+
+    main(input_file_path, output_file_path)
+
+    # Close the WebDriver
+    driver.quit()
