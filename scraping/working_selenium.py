@@ -16,9 +16,10 @@ df = pd.read_csv(dataset_path)
 # Initialize an empty DataFrame to store the results
 result_df = pd.DataFrame(columns=['tweetId', 'tweetText'])
 
-for tweet_id in df['tweetId'][0:1000]:
+for tweet_id in df['tweetId'][2701:2800]:
     tweet_url = f"https://twitter.com/anyuser/status/{str(tweet_id)}"
     driver.get(tweet_url)
+    time.sleep(30)
     try:
         tweet_element = driver.find_element(
             By.CSS_SELECTOR,
@@ -33,6 +34,6 @@ for tweet_id in df['tweetId'][0:1000]:
 # get image ID if possible
 
 result_df.to_csv(
-    '/Users/andrew/Desktop/community_notes_2/dataset/community_notes_with_text.csv', index=False)
+    '/Users/andrew/Desktop/community_notes_2/dataset/2701-2800.csv', index=False)
 
 driver.quit()

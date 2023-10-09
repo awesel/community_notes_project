@@ -3,7 +3,7 @@ import re
 
 # Read the dataset
 df = pd.read_csv(
-    '/Users/andrew/Desktop/community_notes_2/dataset/scraped_tweets.csv')
+    '/Users/andrew/Desktop/community_notes_2/final_raw.csv')
 
 # Initialize lists to store the new columns
 n = len(df)

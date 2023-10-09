@@ -44,7 +44,7 @@ if current_row is not None:
 print(output_dict[0])
 
 # Read the input CSV file and write to a new output CSV file
-with open("processed_4.csv", "r", newline="") as infile, open("update_processed_4.csv", "w", newline="") as outfile:
+with open("processed_tweets_4.csv", "r", newline="") as infile, open("final_raw_m.csv", "w", newline="") as outfile:
     reader = csv.DictReader(infile)
     fieldnames = reader.fieldnames
 
@@ -52,6 +52,6 @@ with open("processed_4.csv", "r", newline="") as infile, open("update_processed_
     writer.writeheader()
 
     for row in reader:
-        numba = row.get("rowNumber", None)
+        numba = row.get("row_number", None)
         row["metrics"] = output_dict[int(numba)]
         writer.writerow(row)
